@@ -1,0 +1,156 @@
+= Problem Accessing SCS with MOTM from Java
+
+== Overview
+
+This project demonstrates the problem of accessing the Shared CROMERR Services (SCS) with the https://en.wikipedia.org/wiki/Message_Transmission_Optimization_Mechanism[message transmission optimization mechanism] (MTOM) enabled.
+
+In the accompanying project, the main class, `org.example.SCSAuthOverMTOM`, uses the `SignatureAndCorService2` SCS service to authenticate an administrative user using the `authenticate` operation.
+
+It is not the case that MTOM is very useful with the `authenticate` command but every other SOAP call in SCS requires `authenticate` to be invoked first so this is the shortest example of the problem.
+
+If MTOM is disabled, the call will succeed, provided proper credentials.
+
+If MTOM is enabled, the call always fails, regardless of whether the credentials are valid.
+
+The MTOM-enabled call fails because the SCS server does not seem to properly parse the operation out of the message header (see the output below).
+
+== Running the Project
+
+The example application can be run using gradle (included with the source):
+
+[source,shell]
+----
+C:\> .\gradlew.bat run
+----
+
+This will download the necessary dependencies/plugins, generate the SOAP stub classes from the WSDL and compile all the classes, before executing the application.
+
+If no arguments are supplied, the application runs with a dummy adminId and credentials, with MTOM enabled.
+
+To run it with real credentials and MTOM *not* enabled, use the `--args` option. For example:
+
+[source,shell]
+----
+C:\> .\gradlew.bat run --args="andrew_geery@windsorsolutions.com XXXXXX false"
+----
+
+where the first argument is the adminId, the second argument is the credentials for the adminId and third argument is whether MTOM is enabled.
+
+Running the application from Gradle enables detailed logging of the SOAP request and response.
+
+== Example Output with MTOM Enabled
+
+Below is the output from running the application with no arguments (i.e., with MTOM enabled). Note that the SOAP call fails because the operation can't be found.
+
+----
+PS D:\projects\scs-mtom> .\gradlew.bat run
+
+> Task :run
+
+
+
+===============================================
+Attempting to login to SCS using
+        - adminId: blah
+        - credentials: blah
+        - is MTOM enabled: true
+===============================================
+
+
+
+---[HTTP request - https://encromerrdev.epacdxnode.net/shared-cromerr-ws/services/SignatureAndCorService2]---
+Accept: application/soap+xml, multipart/related
+Content-Type: multipart/related;start="<rootpart*85a8be51-44da-49be-8f89-991c3f22984b@example.jaxws.sun.com>";type="application/xop+xml";boundary="uuid:85a8be51-44da-49be-8f89-991c3f22984b";start-info="application/soap+xml;action=\"Authenticate\""
+User-Agent: JAX-WS RI 2.2.9-b130926.1035 svn-revision#5f6196f2b90e9460065a4c2f4e30e065b245e51e
+--uuid:85a8be51-44da-49be-8f89-991c3f22984b
+Content-Id: <rootpart*85a8be51-44da-49be-8f89-991c3f22984b@example.jaxws.sun.com>
+Content-Type: application/xop+xml;charset=utf-8;type="application/soap+xml;action=\"Authenticate\""
+Content-Transfer-Encoding: binary
+
+<?xml version="1.0" ?><S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope"><S:Body><ns3:Authenticate xmlns:ns3="http://www.exchangenetwork.net/schema/sharedcromerr/2" xmlns:xmime="http://www.w3.org/2005/05/xmlmime"><adminId>blah</adminId><credential>blah</credential></ns3:Authenticate></S:Body></S:Envelope>
+--uuid:85a8be51-44da-49be-8f89-991c3f22984b----------------------
+
+---[HTTP response - https://encromerrdev.epacdxnode.net/shared-cromerr-ws/services/SignatureAndCorService2 - 500]---
+null: HTTP/1.1 500
+Access-Control-Allow-Origin: *
+Cache-Control: max-age=31536000, private, no-cache, no-store, must-revalidate
+Content-Length: 576
+Content-Type: multipart/related; type="application/xop+xml"; boundary="uuid:54844ea9-8b3c-48be-8e7f-8c8cf042aa75"; start="<root.message@cxf.apache.org>"; start-info="application/soap+xml"
+Date: Thu, 22 Oct 2020 22:23:06 GMT
+Expires: -1
+Pragma: no-cache
+X-Content-Type-Options: NOSNIFF
+X-Frame-Options: SAMEORIGIN
+X-Powered-By: ARR/3.0
+X-XSS-Protection: 1; mode=block
+--uuid:54844ea9-8b3c-48be-8e7f-8c8cf042aa75
+Content-Type: application/xop+xml; charset=UTF-8; type="application/soap+xml";
+Content-Transfer-Encoding: binary
+Content-ID: <root.message@cxf.apache.org>
+
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope"><soap:Body><soap:Fault><soap:Code><soap:Value>soap:Receiver</soap:Value></soap:Code><soap:Reason><soap:Text xml:lang="en">The given SOAPAction \"Authenticate\"" does not match an operation.</soap:Text></soap:Reason></soap:Fault></soap:Body></soap:Envelope>
+--uuid:54844ea9-8b3c-48be-8e7f-8c8cf042aa75----------------------
+
+
+
+
+===============================================
+Authentication failed with SCS -- Error: Client received SOAP Fault from server: The given SOAPAction \"Authenticate\"" does not match an operation. Please see the server log to find more detail regarding exact cause of the failure.
+===============================================
+----
+
+== Example Output with MTOM Disabled
+
+Below is the output from running the application with arguments supplying a valid adminId and credentials, and with MTOM *disabled. Note that the SOAP call succeeds.
+
+----
+PS D:\projects\scs-mtom> .\gradlew.bat run --args="andrew_geery@windsorsolutions.com XXXXXXX false"
+
+> Task :run
+
+
+
+===============================================
+Attempting to login to SCS using
+        - adminId: andrew_geery@windsorsolutions.com
+        - credentials: XXXXXXX
+        - is MTOM enabled: false
+===============================================
+
+
+
+---[HTTP request - https://encromerrdev.epacdxnode.net/shared-cromerr-ws/services/SignatureAndCorService2]---
+Accept: application/soap+xml, multipart/related
+Content-Type: application/soap+xml; charset=utf-8;action="Authenticate"
+User-Agent: JAX-WS RI 2.2.9-b130926.1035 svn-revision#5f6196f2b90e9460065a4c2f4e30e065b245e51e
+<?xml version="1.0" ?><S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope"><S:Body><ns3:Authenticate xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:ns3="http://www.exchangenetwork.net/schema/sharedcromerr/2"><adminId>andrew_geery@windsorsolutions.com</adminId><credential>XXXXXXX</credential></ns3:Authenticate></S:Body></S:Envelope>--------------------
+
+---[HTTP response - https://encromerrdev.epacdxnode.net/shared-cromerr-ws/services/SignatureAndCorService2 - 200]---
+null: HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Cache-Control: max-age=31536000, private, no-cache, no-store, must-revalidate
+Content-Length: 733
+Content-Type: multipart/related; type="application/xop+xml"; boundary="uuid:1050934c-257c-4725-822e-40de7ad73683"; start="<root.message@cxf.apache.org>"; start-info="application/soap+xml"
+Date: Thu, 22 Oct 2020 22:27:42 GMT
+Expires: -1
+Keep-Alive: timeout=20
+Pragma: no-cache
+X-Content-Type-Options: NOSNIFF
+X-Frame-Options: SAMEORIGIN
+X-Powered-By: ARR/3.0
+X-XSS-Protection: 1; mode=block
+--uuid:1050934c-257c-4725-822e-40de7ad73683
+Content-Type: application/xop+xml; charset=UTF-8; type="application/soap+xml";
+Content-Transfer-Encoding: binary
+Content-ID: <root.message@cxf.apache.org>
+
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope"><soap:Body><ns2:AuthenticateResponse xmlns:ns2="http://www.exchangenetwork.net/schema/sharedcromerr/2"><securityToken>csm:IiKaBeCRDqI8KXSaRnin9xu10VIobQKSNteRKk0YLKNpwxsgYKHlv0ioati1M7VZ.iNIFVSYRH5mqR5HouHmjVFZc5XKwGmHirjy_dNl7w1SZJYK1n0wryBFAdmGDfXCM.d7jpGebKOdw2-h3K1auxzVKfGKuLIcCVcCHQlQ_vaS1G_DoG7ylljrvj1tLrOVir.q6Jpz318Y8Mk83NTszvKWg,,.</securityToken></ns2:AuthenticateResponse></soap:Body></soap:Envelope>
+--uuid:1050934c-257c-4725-822e-40de7ad73683----------------------
+
+
+
+
+===============================================
+Successfully authenticated with SCS!
+===============================================
+----
