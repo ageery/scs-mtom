@@ -7,6 +7,7 @@ import net.exchangenetwork.wsdl.sharedcromerr.signandcor._2.SignatureAndCorServi
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.soap.SOAPBinding;
 import java.net.URL;
+import java.util.Collections;
 
 public class SCSAuthOverMTOM {
 
@@ -29,6 +30,9 @@ public class SCSAuthOverMTOM {
         SignatureAndCorService2 client = service.getSignatureAndCorService2Port();
         BindingProvider bp = (BindingProvider) client;
         SOAPBinding binding = (SOAPBinding) bp.getBinding();
+
+        binding.setHandlerChain(Collections.singletonList(new ActionOutHandler()));
+
         binding.setMTOMEnabled(enabledMtom);
         Authenticate auth = new Authenticate();
         auth.setAdminId(adminId);
@@ -42,6 +46,7 @@ public class SCSAuthOverMTOM {
             // The error is: The given SOAPAction \"Authenticate\"" does not match an operation.
             System.out.println("\n\n\n===============================================");
             System.out.println("Authentication failed with SCS -- Error: " + e.getLocalizedMessage());
+            e.printStackTrace();
             System.out.println("===============================================\n\n\n");
         }
 
