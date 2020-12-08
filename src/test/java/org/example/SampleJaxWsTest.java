@@ -14,24 +14,19 @@ import java.util.Collections;
 public class SampleJaxWsTest {
 
     @Test
-    public void testClient() {
-        try {
-            // Initialize client
-            URI wsdl =  SampleJaxWsTest.class.getResource("/SignatureAndCorService2.wsdl").toURI();
-            SignatureAndCorService2Service service = new SignatureAndCorService2Service(wsdl.toURL());
-            SignatureAndCorService2 clientMtom = service.getSignatureAndCorService2Port();
-            configureClient(clientMtom, "https://encromerrdev.epacdxnode.net/shared-cromerr-ws/services/SignatureAndCorService2", true);
+    public void testClient() throws Exception {
+        // Initialize client
+        URI wsdl = SampleJaxWsTest.class.getResource("/SignatureAndCorService2.wsdl").toURI();
+        SignatureAndCorService2Service service = new SignatureAndCorService2Service(wsdl.toURL());
+        SignatureAndCorService2 clientMtom = service.getSignatureAndCorService2Port();
+        configureClient(clientMtom, "https://encromerrdev.epacdxnode.net/shared-cromerr-ws/services/SignatureAndCorService2", true);
 
-            // Authenticate
-            Authenticate authRequest = new Authenticate();
-            authRequest.setAdminId("testing");
-            authRequest.setCredential("testing");
-            AuthenticateResponse authResponse = clientMtom.authenticate(authRequest);
-            System.out.println(authResponse.getSecurityToken());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        // Authenticate
+        Authenticate authRequest = new Authenticate();
+        authRequest.setAdminId("testing");
+        authRequest.setCredential("testing");
+        AuthenticateResponse authResponse = clientMtom.authenticate(authRequest);
+        System.out.println(authResponse.getSecurityToken());
     }
 
     protected static void configureClient(Object service, String address, Boolean enableMtom) {
