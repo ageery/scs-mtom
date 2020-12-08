@@ -19,4 +19,10 @@ jobs:
           java-version: 8
 
       - name: Build with Gradle
-        run: gradle build
+        run: gradle build -i
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v1
+        with:
+          name: Gradle Tests
+          path: build/reports/tests/test
