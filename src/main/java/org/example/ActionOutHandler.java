@@ -22,6 +22,9 @@ public class ActionOutHandler implements SOAPHandler<SOAPMessageContext> {
 	@Override
 	public boolean handleMessage(SOAPMessageContext context) {
 		String contentType = (String) context.get("Content-Type");
+		if (contentType == null) {
+			throw new RuntimeException("SOAPMessageContext#get(\"Content-Type\") returned null.");
+		}
 		Matcher matcher = Pattern.compile("start-info=\"application\\/soap\\+xml; action=\\\\\"([A-Za-z0-9_]+)\\\\\"\"").matcher(contentType);
 		if (matcher.find()) {
 			String action =  matcher.group(1);

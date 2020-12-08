@@ -1,0 +1,770 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="SignatureAndCorService2Service" targetNamespace="http://www.exchangenetwork.net/wsdl/sharedcromerr/signandcor/2" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.exchangenetwork.net/wsdl/sharedcromerr/signandcor/2" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:ns1="http://www.exchangenetwork.net/schema/sharedcromerr/2">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.exchangenetwork.net/schema/sharedcromerr/2" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://www.exchangenetwork.net/schema/sharedcromerr/2" xmlns:xmime="http://www.w3.org/2005/05/xmlmime">
+										<xs:import namespace="http://www.w3.org/2005/05/xmlmime" schemaLocation="http://www.w3.org/2005/05/xmlmime" />
+  <xs:complexType name="AuditEvent">
+    <xs:sequence>
+      <xs:element name="securityToken" type="xs:string"/>
+      <xs:element name="activityId" type="xs:string"/>
+      <xs:element name="event" type="tns:EventType"/>
+      <xs:element name="user" type="tns:UserType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="EventType">
+    <xs:sequence>
+      <xs:element name="date" type="xs:dateTime"/>
+      <xs:element name="group" type="tns:EventGroupType"/>
+      <xs:element name="type" type="tns:EventTypeType"/>
+      <xs:element name="status" type="tns:EventStatusType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="UserType">
+    <xs:sequence>
+      <xs:element name="UserId" type="xs:string"/>
+      <xs:element name="FirstName" type="xs:string"/>
+      <xs:element name="LastName" type="xs:string"/>
+      <xs:element minOccurs="0" name="MiddleInitial" type="xs:string"/>
+      <xs:element minOccurs="0" name="Role" type="tns:UserRoleType"/>
+      <xs:element minOccurs="0" name="Organization" type="tns:UserOrganizationType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="UserRoleType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="RoleName" type="xs:string"/>
+      <xs:element minOccurs="0" name="RoleId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="UserOrganizationType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="OrganizationName" type="xs:string"/>
+      <xs:element minOccurs="0" name="OrganizationId" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="AuditEventResponse">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="CreateActivity">
+    <xs:sequence>
+      <xs:element name="securityToken" type="xs:string"/>
+      <xs:element name="dataflow" type="xs:string"/>
+      <xs:element name="user" type="tns:UserType"/>
+      <xs:element minOccurs="0" name="properties" type="tns:PropertiesType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PropertiesType">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="Property" type="tns:PropertyType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PropertyType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Key" type="xs:string"/>
+      <xs:element minOccurs="0" name="Value" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CreateActivityResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="activityId" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ValidateCor">
+    <xs:sequence>
+      <xs:element name="securityToken" type="xs:string"/>
+      <xs:element name="activityId" type="xs:string"/>
+      <xs:element name="user" type="tns:UserType"/>
+      <xs:element name="documentId" type="xs:string"/>
+      <xs:element name="signatureData" type="tns:SignatureDataType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SignatureDataType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="passwordSHA256Hash" type="xs:string"/>
+      <xs:element minOccurs="0" name="questionId" type="xs:string"/>
+      <xs:element minOccurs="0" name="answerSHA256Hash" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ValidateCorResponse">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="GetActivityHistoryDetail">
+    <xs:sequence>
+      <xs:element name="securityToken" type="xs:string"/>
+      <xs:element name="activityId" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GetActivityHistoryDetailResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="activity" type="tns:CorActivityType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CorActivityType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ID" type="xs:string"/>
+      <xs:element minOccurs="0" name="Dataflow" type="xs:string"/>
+      <xs:element minOccurs="0" name="CreatedDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="User" type="tns:UserType"/>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="Documents" type="tns:DocumentType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DocumentType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ID" type="xs:string"/>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Format" type="tns:DocumentFormatType"/>
+      <xs:element minOccurs="0" name="CreatedDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="RetentionStatus" type="tns:RetentionStatusType"/>
+      <xs:element minOccurs="0" name="RepudiationInfo" type="tns:RepudiationInfoType"/>
+      <xs:element minOccurs="0" name="Content" type="xs:base64Binary" xmime:expectedContentTypes="*/*"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="RepudiationInfoType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Description" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GetSignatureHistory">
+    <xs:sequence>
+      <xs:element name="securityToken" type="xs:string"/>
+      <xs:element name="activityId" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GetSignatureHistoryResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="history" type="tns:SignatureHistoryType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SignatureHistoryType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ID" type="xs:string"/>
+      <xs:element minOccurs="0" name="Dataflow" type="xs:string"/>
+      <xs:element minOccurs="0" name="CreatedDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="User" type="tns:UserType"/>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="Events" type="tns:SignatureEventType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SignatureEventType">
+    <xs:sequence>
+      <xs:element name="date" type="xs:dateTime"/>
+      <xs:element name="group" type="tns:EventGroupType"/>
+      <xs:element name="type" type="tns:EventTypeType"/>
+      <xs:element name="status" type="tns:EventStatusType"/>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="Documents" type="tns:DocumentType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="StoreCor">
+    <xs:sequence>
+      <xs:element name="securityToken" type="xs:string"/>
+      <xs:element name="activityId" type="xs:string"/>
+      <xs:element name="user" type="tns:UserType"/>
+      <xs:element minOccurs="0" name="notifications" type="tns:NotificationsType"/>
+      <xs:element name="document" type="tns:DocumentType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NotificationsType">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="Notification" type="tns:NotificationType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="NotificationType">
+    <xs:sequence>
+      <xs:element name="NotificationCategory" type="tns:NotificationCategoryType"/>
+      <xs:element name="Value" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="StoreCorResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="documentId" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Authenticate">
+    <xs:sequence>
+      <xs:element name="adminId" type="xs:string"/>
+      <xs:element name="credential" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="AuthenticateResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="securityToken" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="RepudiateCor">
+    <xs:sequence>
+      <xs:element name="securityToken" type="xs:string"/>
+      <xs:element name="activityId" type="xs:string"/>
+      <xs:element name="user" type="tns:UserType"/>
+      <xs:element name="documentId" type="xs:string"/>
+      <xs:element name="repudiationInfo" type="tns:RepudiationInfoType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="RepudiateCorResponse">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="SignAndStoreCor">
+    <xs:sequence>
+      <xs:element name="securityToken" type="xs:string"/>
+      <xs:element name="activityId" type="xs:string"/>
+      <xs:element name="user" type="tns:UserType"/>
+      <xs:element minOccurs="0" name="notifications" type="tns:NotificationsType"/>
+      <xs:element name="document" type="tns:DocumentType"/>
+      <xs:element name="signatureData" type="tns:SignatureDataType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SignAndStoreCorResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="documentId" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DownloadSignature">
+    <xs:sequence>
+      <xs:element name="securityToken" type="xs:string"/>
+      <xs:element name="activityId" type="xs:string"/>
+      <xs:element name="user" type="tns:UserType"/>
+      <xs:element name="documentId" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DownloadSignatureResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="detachedSignature" type="tns:DetachedSignatureType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DetachedSignatureType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Content" type="xs:base64Binary" xmime:expectedContentTypes="*/*"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SetCorRetentionStatus">
+    <xs:sequence>
+      <xs:element name="securityToken" type="xs:string"/>
+      <xs:element name="activityId" type="xs:string"/>
+      <xs:element name="user" type="tns:UserType"/>
+      <xs:element name="documentId" type="xs:string"/>
+      <xs:element name="status" type="tns:RetentionStatusType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SetCorRetentionStatusResponse">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="DownloadCor">
+    <xs:sequence>
+      <xs:element name="securityToken" type="xs:string"/>
+      <xs:element name="activityId" type="xs:string"/>
+      <xs:element name="user" type="tns:UserType"/>
+      <xs:element name="documentId" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DownloadCorResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="document" type="tns:DocumentType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SearchForActivityHistorySummary">
+    <xs:sequence>
+      <xs:element name="securityToken" type="xs:string"/>
+      <xs:element name="searchCriteria" type="tns:CorSearchCriteriaType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CorSearchCriteriaType">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ActivityId" type="xs:string"/>
+      <xs:element minOccurs="0" name="Dataflow" type="xs:string"/>
+      <xs:element minOccurs="0" name="UserId" type="xs:string"/>
+      <xs:element minOccurs="0" name="RoleName" type="xs:string"/>
+      <xs:element minOccurs="0" name="RoleId" type="xs:long"/>
+      <xs:element minOccurs="0" name="OrganizationName" type="xs:string"/>
+      <xs:element minOccurs="0" name="OrganizationId" type="xs:long"/>
+      <xs:element minOccurs="0" name="DocumentId" type="xs:string"/>
+      <xs:element minOccurs="0" name="DocumentName" type="xs:string"/>
+      <xs:element minOccurs="0" name="DocumentRetentionStatus" type="tns:RetentionStatusType"/>
+      <xs:element minOccurs="0" name="StartDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="EndDate" type="xs:dateTime"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SearchForActivityHistorySummaryResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="activities" nillable="true" type="tns:CorActivityType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="EventGroupType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Signature"/>
+      <xs:enumeration value="Authentication"/>
+      <xs:enumeration value="SecondFactor"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="EventTypeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Authenticate"/>
+      <xs:enumeration value="GetQuestion"/>
+      <xs:enumeration value="ValidateAnswer"/>
+      <xs:enumeration value="SignDetached"/>
+      <xs:enumeration value="StoreDocument"/>
+      <xs:enumeration value="DownloadDocument"/>
+      <xs:enumeration value="DownloadSignature"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="EventStatusType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Success"/>
+      <xs:enumeration value="Failure"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="SharedCromerrErrorCode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="E_Unknown"/>
+      <xs:enumeration value="E_UnknownUser"/>
+      <xs:enumeration value="E_InvalidCredential"/>
+      <xs:enumeration value="E_AccountLocked"/>
+      <xs:enumeration value="E_AccessDenied"/>
+      <xs:enumeration value="E_TokenExpired"/>
+      <xs:enumeration value="E_InvalidToken"/>
+      <xs:enumeration value="E_InvalidDataflowName"/>
+      <xs:enumeration value="E_InvalidArgument"/>
+      <xs:enumeration value="E_InsufficientPrivileges"/>
+      <xs:enumeration value="E_InvalidSignature"/>
+      <xs:enumeration value="E_WrongIdPassword"/>
+      <xs:enumeration value="E_AccountExpired"/>
+      <xs:enumeration value="E_WrongAnswer"/>
+      <xs:enumeration value="E_WeakPassword"/>
+      <xs:enumeration value="E_ReachedMaxNumberOfAttempts"/>
+      <xs:enumeration value="E_InternalError"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="DocumentFormatType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="XML"/>
+      <xs:enumeration value="BIN"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="RetentionStatusType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Default"/>
+      <xs:enumeration value="HeldForEnforcement"/>
+      <xs:enumeration value="Repudiated"/>
+      <xs:enumeration value="Expired"/>
+      <xs:enumeration value="Rescinded"/>
+      <xs:enumeration value="Accepted"/>
+      <xs:enumeration value="Approved"/>
+      <xs:enumeration value="Pending"/>
+      <xs:enumeration value="Rejected"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="NotificationCategoryType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Email"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="AuditEvent" nillable="true" type="tns:AuditEvent"/>
+  <xs:element name="AuditEventResponse" nillable="true" type="tns:AuditEventResponse"/>
+  <xs:element name="SharedCromerrFault" type="tns:SharedCromerrFault"/>
+  <xs:complexType name="SharedCromerrFault">
+    <xs:sequence>
+      <xs:element name="description" nillable="true" type="xs:string"/>
+      <xs:element name="errorCode" nillable="true" type="tns:SharedCromerrErrorCode"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CreateActivity" nillable="true" type="tns:CreateActivity"/>
+  <xs:element name="CreateActivityResponse" nillable="true" type="tns:CreateActivityResponse"/>
+  <xs:element name="ValidateCor" nillable="true" type="tns:ValidateCor"/>
+  <xs:element name="ValidateCorResponse" nillable="true" type="tns:ValidateCorResponse"/>
+  <xs:element name="GetActivityHistoryDetail" nillable="true" type="tns:GetActivityHistoryDetail"/>
+  <xs:element name="GetActivityHistoryDetailResponse" nillable="true" type="tns:GetActivityHistoryDetailResponse"/>
+  <xs:element name="GetSignatureHistory" nillable="true" type="tns:GetSignatureHistory"/>
+  <xs:element name="GetSignatureHistoryResponse" nillable="true" type="tns:GetSignatureHistoryResponse"/>
+  <xs:element name="StoreCor" nillable="true" type="tns:StoreCor"/>
+  <xs:element name="StoreCorResponse" nillable="true" type="tns:StoreCorResponse"/>
+  <xs:element name="Authenticate" nillable="true" type="tns:Authenticate"/>
+  <xs:element name="AuthenticateResponse" nillable="true" type="tns:AuthenticateResponse"/>
+  <xs:element name="RepudiateCor" nillable="true" type="tns:RepudiateCor"/>
+  <xs:element name="RepudiateCorResponse" nillable="true" type="tns:RepudiateCorResponse"/>
+  <xs:element name="SignAndStoreCor" nillable="true" type="tns:SignAndStoreCor"/>
+  <xs:element name="SignAndStoreCorResponse" nillable="true" type="tns:SignAndStoreCorResponse"/>
+  <xs:element name="DownloadSignature" nillable="true" type="tns:DownloadSignature"/>
+  <xs:element name="DownloadSignatureResponse" nillable="true" type="tns:DownloadSignatureResponse"/>
+  <xs:element name="SetCorRetentionStatus" nillable="true" type="tns:SetCorRetentionStatus"/>
+  <xs:element name="SetCorRetentionStatusResponse" nillable="true" type="tns:SetCorRetentionStatusResponse"/>
+  <xs:element name="DownloadCor" nillable="true" type="tns:DownloadCor"/>
+  <xs:element name="DownloadCorResponse" nillable="true" type="tns:DownloadCorResponse"/>
+  <xs:element name="SearchForActivityHistorySummary" nillable="true" type="tns:SearchForActivityHistorySummary"/>
+  <xs:element name="SearchForActivityHistorySummaryResponse" nillable="true" type="tns:SearchForActivityHistorySummaryResponse"/>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="SignAndStoreCorResponse">
+    <wsdl:part name="parameters" element="ns1:SignAndStoreCorResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="DownloadSignatureResponse">
+    <wsdl:part name="parameters" element="ns1:DownloadSignatureResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetSignatureHistory">
+    <wsdl:part name="parameters" element="ns1:GetSignatureHistory">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="StoreCor">
+    <wsdl:part name="parameters" element="ns1:StoreCor">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="DownloadCorResponse">
+    <wsdl:part name="parameters" element="ns1:DownloadCorResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetActivityHistoryDetailResponse">
+    <wsdl:part name="parameters" element="ns1:GetActivityHistoryDetailResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RepudiateCor">
+    <wsdl:part name="parameters" element="ns1:RepudiateCor">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="AuditEventResponse">
+    <wsdl:part name="parameters" element="ns1:AuditEventResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="StoreCorResponse">
+    <wsdl:part name="parameters" element="ns1:StoreCorResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RepudiateCorResponse">
+    <wsdl:part name="parameters" element="ns1:RepudiateCorResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ValidateCorResponse">
+    <wsdl:part name="parameters" element="ns1:ValidateCorResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SetCorRetentionStatus">
+    <wsdl:part name="parameters" element="ns1:SetCorRetentionStatus">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="AuditEvent">
+    <wsdl:part name="parameters" element="ns1:AuditEvent">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="CreateActivity">
+    <wsdl:part name="parameters" element="ns1:CreateActivity">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="ValidateCor">
+    <wsdl:part name="parameters" element="ns1:ValidateCor">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetActivityHistoryDetail">
+    <wsdl:part name="parameters" element="ns1:GetActivityHistoryDetail">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SearchForActivityHistorySummaryResponse">
+    <wsdl:part name="parameters" element="ns1:SearchForActivityHistorySummaryResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="Authenticate">
+    <wsdl:part name="parameters" element="ns1:Authenticate">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="CreateActivityResponse">
+    <wsdl:part name="parameters" element="ns1:CreateActivityResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SharedCromerrException">
+    <wsdl:part name="SharedCromerrException" element="ns1:SharedCromerrFault">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SignAndStoreCor">
+    <wsdl:part name="parameters" element="ns1:SignAndStoreCor">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="DownloadSignature">
+    <wsdl:part name="parameters" element="ns1:DownloadSignature">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="GetSignatureHistoryResponse">
+    <wsdl:part name="parameters" element="ns1:GetSignatureHistoryResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="AuthenticateResponse">
+    <wsdl:part name="parameters" element="ns1:AuthenticateResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="DownloadCor">
+    <wsdl:part name="parameters" element="ns1:DownloadCor">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SearchForActivityHistorySummary">
+    <wsdl:part name="parameters" element="ns1:SearchForActivityHistorySummary">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="SetCorRetentionStatusResponse">
+    <wsdl:part name="parameters" element="ns1:SetCorRetentionStatusResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="SignatureAndCorService2">
+    <wsdl:operation name="AuditEvent">
+      <wsdl:input name="AuditEvent" message="tns:AuditEvent">
+    </wsdl:input>
+      <wsdl:output name="AuditEventResponse" message="tns:AuditEventResponse">
+    </wsdl:output>
+      <wsdl:fault name="SharedCromerrException" message="tns:SharedCromerrException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="CreateActivity">
+      <wsdl:input name="CreateActivity" message="tns:CreateActivity">
+    </wsdl:input>
+      <wsdl:output name="CreateActivityResponse" message="tns:CreateActivityResponse">
+    </wsdl:output>
+      <wsdl:fault name="SharedCromerrException" message="tns:SharedCromerrException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ValidateCor">
+      <wsdl:input name="ValidateCor" message="tns:ValidateCor">
+    </wsdl:input>
+      <wsdl:output name="ValidateCorResponse" message="tns:ValidateCorResponse">
+    </wsdl:output>
+      <wsdl:fault name="SharedCromerrException" message="tns:SharedCromerrException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetActivityHistoryDetail">
+      <wsdl:input name="GetActivityHistoryDetail" message="tns:GetActivityHistoryDetail">
+    </wsdl:input>
+      <wsdl:output name="GetActivityHistoryDetailResponse" message="tns:GetActivityHistoryDetailResponse">
+    </wsdl:output>
+      <wsdl:fault name="SharedCromerrException" message="tns:SharedCromerrException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetSignatureHistory">
+      <wsdl:input name="GetSignatureHistory" message="tns:GetSignatureHistory">
+    </wsdl:input>
+      <wsdl:output name="GetSignatureHistoryResponse" message="tns:GetSignatureHistoryResponse">
+    </wsdl:output>
+      <wsdl:fault name="SharedCromerrException" message="tns:SharedCromerrException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="StoreCor">
+      <wsdl:input name="StoreCor" message="tns:StoreCor">
+    </wsdl:input>
+      <wsdl:output name="StoreCorResponse" message="tns:StoreCorResponse">
+    </wsdl:output>
+      <wsdl:fault name="SharedCromerrException" message="tns:SharedCromerrException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="Authenticate">
+      <wsdl:input name="Authenticate" message="tns:Authenticate">
+    </wsdl:input>
+      <wsdl:output name="AuthenticateResponse" message="tns:AuthenticateResponse">
+    </wsdl:output>
+      <wsdl:fault name="SharedCromerrException" message="tns:SharedCromerrException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="RepudiateCor">
+      <wsdl:input name="RepudiateCor" message="tns:RepudiateCor">
+    </wsdl:input>
+      <wsdl:output name="RepudiateCorResponse" message="tns:RepudiateCorResponse">
+    </wsdl:output>
+      <wsdl:fault name="SharedCromerrException" message="tns:SharedCromerrException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SignAndStoreCor">
+      <wsdl:input name="SignAndStoreCor" message="tns:SignAndStoreCor">
+    </wsdl:input>
+      <wsdl:output name="SignAndStoreCorResponse" message="tns:SignAndStoreCorResponse">
+    </wsdl:output>
+      <wsdl:fault name="SharedCromerrException" message="tns:SharedCromerrException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadSignature">
+      <wsdl:input name="DownloadSignature" message="tns:DownloadSignature">
+    </wsdl:input>
+      <wsdl:output name="DownloadSignatureResponse" message="tns:DownloadSignatureResponse">
+    </wsdl:output>
+      <wsdl:fault name="SharedCromerrException" message="tns:SharedCromerrException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SetCorRetentionStatus">
+      <wsdl:input name="SetCorRetentionStatus" message="tns:SetCorRetentionStatus">
+    </wsdl:input>
+      <wsdl:output name="SetCorRetentionStatusResponse" message="tns:SetCorRetentionStatusResponse">
+    </wsdl:output>
+      <wsdl:fault name="SharedCromerrException" message="tns:SharedCromerrException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadCor">
+      <wsdl:input name="DownloadCor" message="tns:DownloadCor">
+    </wsdl:input>
+      <wsdl:output name="DownloadCorResponse" message="tns:DownloadCorResponse">
+    </wsdl:output>
+      <wsdl:fault name="SharedCromerrException" message="tns:SharedCromerrException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SearchForActivityHistorySummary">
+      <wsdl:input name="SearchForActivityHistorySummary" message="tns:SearchForActivityHistorySummary">
+    </wsdl:input>
+      <wsdl:output name="SearchForActivityHistorySummaryResponse" message="tns:SearchForActivityHistorySummaryResponse">
+    </wsdl:output>
+      <wsdl:fault name="SharedCromerrException" message="tns:SharedCromerrException">
+    </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="SignatureAndCorService2ServiceSoapBinding" type="tns:SignatureAndCorService2">
+    <soap12:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="AuditEvent">
+      <soap12:operation soapAction="AuditEvent" style="document"/>
+      <wsdl:input name="AuditEvent">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="AuditEventResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SharedCromerrException">
+        <soap12:fault name="SharedCromerrException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="CreateActivity">
+      <soap12:operation soapAction="CreateActivity" style="document"/>
+      <wsdl:input name="CreateActivity">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="CreateActivityResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SharedCromerrException">
+        <soap12:fault name="SharedCromerrException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="ValidateCor">
+      <soap12:operation soapAction="ValidateCor" style="document"/>
+      <wsdl:input name="ValidateCor">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="ValidateCorResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SharedCromerrException">
+        <soap12:fault name="SharedCromerrException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetActivityHistoryDetail">
+      <soap12:operation soapAction="GetActivityHistoryDetail" style="document"/>
+      <wsdl:input name="GetActivityHistoryDetail">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetActivityHistoryDetailResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SharedCromerrException">
+        <soap12:fault name="SharedCromerrException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="StoreCor">
+      <soap12:operation soapAction="StoreCor" style="document"/>
+      <wsdl:input name="StoreCor">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="StoreCorResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SharedCromerrException">
+        <soap12:fault name="SharedCromerrException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="GetSignatureHistory">
+      <soap12:operation soapAction="GetSignatureHistory" style="document"/>
+      <wsdl:input name="GetSignatureHistory">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="GetSignatureHistoryResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SharedCromerrException">
+        <soap12:fault name="SharedCromerrException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="Authenticate">
+      <soap12:operation soapAction="Authenticate" style="document"/>
+      <wsdl:input name="Authenticate">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="AuthenticateResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SharedCromerrException">
+        <soap12:fault name="SharedCromerrException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="RepudiateCor">
+      <soap12:operation soapAction="RepudiateCor" style="document"/>
+      <wsdl:input name="RepudiateCor">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="RepudiateCorResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SharedCromerrException">
+        <soap12:fault name="SharedCromerrException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SignAndStoreCor">
+      <soap12:operation soapAction="SignAndStoreCOR" style="document"/>
+      <wsdl:input name="SignAndStoreCor">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="SignAndStoreCorResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SharedCromerrException">
+        <soap12:fault name="SharedCromerrException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadSignature">
+      <soap12:operation soapAction="DownloadSignature" style="document"/>
+      <wsdl:input name="DownloadSignature">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="DownloadSignatureResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SharedCromerrException">
+        <soap12:fault name="SharedCromerrException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SetCorRetentionStatus">
+      <soap12:operation soapAction="SetCorRetentionStatus" style="document"/>
+      <wsdl:input name="SetCorRetentionStatus">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="SetCorRetentionStatusResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SharedCromerrException">
+        <soap12:fault name="SharedCromerrException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadCor">
+      <soap12:operation soapAction="DownloadCor" style="document"/>
+      <wsdl:input name="DownloadCor">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="DownloadCorResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SharedCromerrException">
+        <soap12:fault name="SharedCromerrException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="SearchForActivityHistorySummary">
+      <soap12:operation soapAction="SearchForActivityHistorySummary" style="document"/>
+      <wsdl:input name="SearchForActivityHistorySummary">
+        <soap12:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="SearchForActivityHistorySummaryResponse">
+        <soap12:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="SharedCromerrException">
+        <soap12:fault name="SharedCromerrException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="SignatureAndCorService2Service">
+    <wsdl:port name="SignatureAndCorService2Port" binding="tns:SignatureAndCorService2ServiceSoapBinding">
+      <soap12:address location="https://encromerrdev.epacdxnode.net/shared-cromerr-ws/services/SignatureAndCorService2"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

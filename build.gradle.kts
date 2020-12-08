@@ -17,6 +17,15 @@ val generatedDir = "$projectDir/generated/src/main/java"
 
 val wsdlList = listOf("SignatureAndCorService2")
 
+dependencies {
+    implementation(platform("org.junit:junit-bom:5.7.0"))
+    testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-engine")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
 wsdl2java {
     wsdlDir = file(localWsdlDir)
     wsdlsToGenerate = wsdlList.map {
