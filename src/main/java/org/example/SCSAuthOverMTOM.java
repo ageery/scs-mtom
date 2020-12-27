@@ -31,7 +31,7 @@ public class SCSAuthOverMTOM {
         BindingProvider bp = (BindingProvider) client;
         SOAPBinding binding = (SOAPBinding) bp.getBinding();
 
-        binding.setHandlerChain(Collections.singletonList(new ActionOutHandler()));
+        //binding.setHandlerChain(Collections.singletonList(new ActionOutHandler()));
 
         binding.setMTOMEnabled(enabledMtom);
         Authenticate auth = new Authenticate();

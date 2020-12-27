@@ -18,8 +18,15 @@ val generatedDir = "$projectDir/generated/src/main/java"
 val wsdlList = listOf("SignatureAndCorService2")
 
 dependencies {
-    implementation(platform("org.junit:junit-bom:5.7.0"))
+    val junitVersion: String by project
+    implementation(platform("org.junit:junit-bom:$junitVersion"))
     testImplementation(group = "org.junit.jupiter", name = "junit-jupiter-engine")
+}
+
+tasks.compileJava {
+    options.isFork = true
+    options.forkOptions.executable = "javac"
+    options.compilerArgs.add("-XDignore.symbol.file=true")
 }
 
 tasks.withType<Test> {
